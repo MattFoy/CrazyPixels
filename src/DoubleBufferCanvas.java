@@ -2,6 +2,9 @@ import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.Image;
 
+// This DoubleBuffer class was 99% copied from http://www.codeproject.com/Articles/2136/Double-buffer-in-standard-Java-AWT
+// So credit to http://www.codeproject.com/Members/Zizilamoroso
+
 public abstract class DoubleBufferCanvas extends Canvas {
 
 	public DoubleBufferCanvas() {

@@ -16,6 +16,7 @@ public class Settings {
 	
 	public static boolean COLOR_SMOOTHING = true;
 	public static boolean CRUDE_COLOUR_SHIFT = true;
+	public static boolean ALTERNATE_PRESETS = false;
 	
 	private static double screenRatio = 2;
 	private static int screenWidth = 1600;
@@ -128,6 +129,19 @@ public class Settings {
 			chaosFactor = 1;
 			COLOR_MORPH = false;
 			break;
+		}
+	}
+	
+	public static void randomizeLogic(boolean preserveColors) {
+		Color[] oldColorArray = new Color[3];
+		if (preserveColors) {
+			oldColorArray = colorArray.clone();
+		}
+		
+		Settings.choosePreset(rand.nextInt(5));
+		
+		if (preserveColors) {
+			colorArray = oldColorArray;
 		}
 	}
 }

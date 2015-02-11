@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
+//This class is simply a Thread class which contains a CrazyPixelCanvas element in addition to overloading the run method.
 public class CrazyPixelsThread extends Thread {
 	private CrazyPixelsCanvas cpc;	
 

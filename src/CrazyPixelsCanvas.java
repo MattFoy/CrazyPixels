@@ -75,6 +75,9 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 		}
 	}
 
+	//This method attempts to "blur" the colour of a specific cell in the grid by taking the average of each of the
+	//R, G, and B channels. This makes the colours less stark and somewhat smoother. It softens the image but
+	//unfortunately makes it look more "out of focus" than smooth.
 	public Color averageColor(int x, int y) {
 		int[] rgbTotals = new int[] { 0, 0, 0 };
 		Color c;
@@ -172,6 +175,8 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 				(int) (rgbTotals[2] / avgCount));
 	}
 
+	//This method goes through the grid, updating the cells based on variable weighted factor.
+	//Each call to evolve advances the current iteration.
 	public void evolve() {
 		this.canvasHeight = this.getHeight();
 		this.canvasWidth = this.getWidth();
@@ -180,7 +185,11 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// configure the parameters for looping through the grid based on which
 		// way we're looping.
-
+		// Essentially you can look top to bottom, or bottom to top, as well as right to left, or left to right.
+		// This means there are 4 combinations.
+		// If "scrandomize" is set to false then evolve will always process left-right, top-down
+		// Furthermore, if randScrand is true then it will pick one of the four directions at random each time,
+		// otherwise it will alternate sequentially between scan directions.
 		if (!Settings.scrandomize) {
 			x0 = 0;
 			dx = 1;
@@ -227,7 +236,10 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 				}
 			}
 		}
-
+		
+		// the shadowGrid is a new array used to keep track of changes.
+		// Using this prevents certain cell changes from cascading as cell updates would be performed in place
+		// mid calculation without this.
 		if (Settings.useShadowGrid) {
 			shadowGrid = new int[Settings.WIDTH][Settings.HEIGHT];
 		}
@@ -236,6 +248,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 			for (int y = y0; y != ybound; y += dy) {
 				// ============= BEGIN BUSINESS LOGIC =================
 
+				//This array tracks the tallies of each grid value.
 				surroundings = new int[] { 0, 0, 0 };
 
 				// In my defense, the "pokemon" try/catch block is because if a
@@ -243,81 +256,85 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 				// there will certainly be an array out of bounds exception for
 				// things beyond that boundary.
 
-				int durdleCount = 0;
+				//This value tracks how many adjacent cells are offgrid
+				//This may be used later to add to a random grid value
+				int exceptionCount = 0;
 
 				// Top left
 				try {
 					surroundings[grid[x - 1][y - 1]] += Settings.othersCount;
 				} catch (ArrayIndexOutOfBoundsException e) {
-					durdleCount++;
+					exceptionCount++;
 				}
 
 				// Top
 				try {
 					surroundings[grid[x][y - 1]] += Settings.othersCount;
 				} catch (ArrayIndexOutOfBoundsException e) {
-					durdleCount++;
+					exceptionCount++;
 				}
 
 				// Top right
 				try {
 					surroundings[grid[x + 1][y - 1]] += Settings.othersCount;
 				} catch (ArrayIndexOutOfBoundsException e) {
-					durdleCount++;
+					exceptionCount++;
 				}
 
 				// Left
 				try {
 					surroundings[grid[x - 1][y]] += Settings.othersCount;
 				} catch (ArrayIndexOutOfBoundsException e) {
-					durdleCount++;
+					exceptionCount++;
 				}
 
 				// Right
 				try {
 					surroundings[grid[x + 1][y]] += Settings.othersCount;
 				} catch (ArrayIndexOutOfBoundsException e) {
-					durdleCount++;
+					exceptionCount++;
 				}
 
 				// Bottom left
 				try {
 					surroundings[grid[x - 1][y + 1]] += Settings.othersCount;
 				} catch (ArrayIndexOutOfBoundsException e) {
-					durdleCount++;
+					exceptionCount++;
 				}
 
 				// Bottom
 				try {
 					surroundings[grid[x][y + 1]] += Settings.othersCount;
 				} catch (ArrayIndexOutOfBoundsException e) {
-					durdleCount++;
+					exceptionCount++;
 				}
 
 				// Bottom Right
 				try {
 					surroundings[grid[x + 1][y + 1]] += Settings.othersCount;
 				} catch (ArrayIndexOutOfBoundsException e) {
-					durdleCount++;
+					exceptionCount++;
 				}
 
 				// Self
 				surroundings[grid[x][y]] += Settings.selfCount;
 
 				// Count missing edge pieces as a random colour?
-				if (Settings.fuzzEdges && durdleCount != 0) {
+				// This way edge cells are strongly encouraged to flip to a random value.
+				if (Settings.fuzzEdges && exceptionCount != 0) {
 					// for(int i = 0; i < durdleCount; i++) {
 					// surroundings[rand.nextInt(3)]++;
 					// }
-					surroundings[Settings.rand.nextInt(surroundings.length)] += durdleCount
+					surroundings[Settings.rand.nextInt(surroundings.length)] += exceptionCount
 							* Settings.othersCount;
 				}
-
+				
+				// This value adds itself to a random grid value, encoruaging change.
 				if (Settings.chaosFactor != 0) {
 					surroundings[Settings.rand.nextInt(surroundings.length)] += Settings.chaosFactor;
 				}
 
-				// Figure out the highest value
+				// Figure out the highest value in the tally
 				int maxRecord = 0;
 				for (int i = 0; i < surroundings.length; i++) {
 					if (surroundings[i] >= maxRecord) {
@@ -325,7 +342,8 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 					}
 				}
 
-				// Normalize based on that result.
+				// Normalize based on that result. 
+				// Any value equal to the highest is reduced and any value not the highest is increased.
 				for (int i = 0; i < surroundings.length; i++) {
 					if (surroundings[i] < maxRecord) {
 						surroundings[i] += Settings.normalization;
@@ -334,26 +352,31 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 					}
 				}
 
+				// Recalculate the highest value, as it may have changed.
 				maxRecord = 0;
 				for (int i = 0; i < surroundings.length; i++) {
 					if (surroundings[i] >= maxRecord) {
 						maxRecord = surroundings[i];
 					}
 				}
-
+				
+				// Create a list of each index containing a highest value, to determine tie breaks
 				ArrayList<Integer> indexes = new ArrayList<Integer>();
 				for (int i = 0; i < surroundings.length; i++) {
 					if (surroundings[i] == maxRecord) {
 						indexes.add(i);
 					}
 				}
-
+				
+				// Now we determine the "winning" value
 				int maxIndex = 0;
-				if (indexes.size() == 0) {
+				if (indexes.size() == 0) { // If somehow there are no tallies that qualified
+					// (perhaps due to strange normalization / chaos values) it picks a value at random
 					maxIndex = Settings.rand.nextInt(3);
 				} else if (indexes.size() == 1) {
 					maxIndex = indexes.get(0);
 				} else {
+					// In the even of a 2 or 3 way tie, it uses a rock-paper-scissors style tie breaking system
 					if (indexes.contains(0) && indexes.contains(1)
 							&& indexes.contains(2)) {
 						maxIndex = Settings.rand.nextInt(3);
@@ -370,7 +393,8 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 						System.err.println("OOPS?!?!");
 					}
 				}
-
+				
+				// then, set that cell to the new winner in the appropriate array
 				if (Settings.useShadowGrid) {
 					shadowGrid[x][y] = maxIndex;
 				} else {
@@ -380,14 +404,20 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 				// ============= END BUSINESS LOGIC =================
 			}
 		}
-
+		
+		// finally, if using a shadowGrid, swap it in.
 		if (Settings.useShadowGrid) {
 			grid = shadowGrid.clone();
 		}
+		
+		// This is just to track which iteration we're on
+		// and how many calls we've made to Settings.rand.nextInt
 		int lastCount = Settings.rand.getLastReport();
 		int randCount = Settings.rand.getCount();
 		System.out.println("Iteration:" + this.iteration++ + " RandomCounter:"
 				+ randCount + "(" + (randCount - lastCount) + ")");
+		
+		// Colour shifting is still a WIP, it's hard to get a good gradient going
 		if (Settings.COLOR_MORPH && this.iteration % 5 == 0) {
 			for (int i = 0; i < Settings.colorArray.length; i++) {
 				if (Settings.CRUDE_COLOUR_SHIFT) {
@@ -431,6 +461,11 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 					Settings.colorArray[i] = Settings.colorShiftArray[i].rainbow.get(rainbowIdx);
 				}
 			}
+		}
+		
+		// It's possible to switch from one preset to another at any point
+		if (Settings.ALTERNATE_PRESETS && this.iteration % 200 == 0) {
+			Settings.randomizeLogic(true);
 		}
 
 		repaint();
