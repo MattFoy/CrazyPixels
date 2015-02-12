@@ -1,43 +1,53 @@
 import java.awt.Color;
-
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 public class Settings {
 	
-	public static class Presets {
-		public static int DEFAULT = -1;
-		public static int FIFTH_DIMENSION = 0;
-		public static int CRAZY_TRIANGLES = 1;
-		public static int EVOLUTION_COMPLETE = 2;
-		public static int SHADOW_RIPPLES = 3;
-		public static int BLUE_RIPPLES = 4;
+	public class Presets {
+		public int DEFAULT = -1;
+		public int FIFTH_DIMENSION = 0;
+		public int CRAZY_TRIANGLES = 1;
+		public int EVOLUTION_COMPLETE = 2;
+		public int SHADOW_RIPPLES = 3;
+		public int BLUE_RIPPLES = 4;
 	}
 	
 	public static RandomCounter rand = new RandomCounter();
 	
-	public static boolean COLOR_SMOOTHING = true;
-	public static boolean CRUDE_COLOUR_SHIFT = true;
-	public static boolean ALTERNATE_PRESETS = false;
+	public boolean COLOR_SMOOTHING = true;
+	public boolean CRUDE_COLOUR_SHIFT = true;
+	public boolean ALTERNATE_PRESETS = false;
+	public boolean OUTLINES_ONLY = false;
 	
-	private static double screenRatio = 2;
-	private static int screenWidth = 1600;
-	private static int screenHeight = 900;
+	private Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	private double screenRatio = 2;
+	private int screenWidth = screen.width;
+	private int screenHeight = screen.height;
 	
-	public static int WIDTH = (int)(screenWidth/screenRatio);
-	public static int HEIGHT = (int)(screenHeight/screenRatio);
+	public int WIDTH = (int)(screenWidth/screenRatio);
+	public int HEIGHT = (int)(screenHeight/screenRatio);
 	
-	public static boolean COLOR_MORPH;
-	public static Color[] colorArray;
-	public static ColorShift[] colorShiftArray;
-	public static int selfCount;
-	public static int othersCount;
-	public static int normalization;
-	public static boolean useShadowGrid;
-	public static boolean scrandomize;
-	public static boolean randScrand;
-	public static boolean fuzzEdges;
-	public static int chaosFactor;
+	public boolean COLOR_MORPH;
+	public Color[] colorArray;
+	public ColorShift[] colorShiftArray;
+	public int selfCount;
+	public int othersCount;
+	public int normalization;
+	public boolean useShadowGrid;
+	public boolean scrandomize;
+	public boolean randScrand;
+	public boolean fuzzEdges;
+	public int chaosFactor;
 	
-	public static void choosePreset(int choice) {
+	public void setScale(int scale) {
+		screenRatio = scale;
+		
+		WIDTH = (int)(screenWidth/screenRatio);
+		HEIGHT = (int)(screenHeight/screenRatio);
+	}
+	
+	public void choosePreset(int choice) {
 		switch (choice) {
 		case 0:
 			// THE FIFTH DIMENSION
@@ -132,13 +142,13 @@ public class Settings {
 		}
 	}
 	
-	public static void randomizeLogic(boolean preserveColors) {
+	public void randomizeLogic(boolean preserveColors) {
 		Color[] oldColorArray = new Color[3];
 		if (preserveColors) {
 			oldColorArray = colorArray.clone();
 		}
 		
-		Settings.choosePreset(rand.nextInt(5));
+		choosePreset(rand.nextInt(5));
 		
 		if (preserveColors) {
 			colorArray = oldColorArray;

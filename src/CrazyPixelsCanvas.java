@@ -3,9 +3,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CrazyPixelsCanvas extends DoubleBufferCanvas {
-
-	private int[][] grid = new int[Settings.WIDTH][Settings.HEIGHT];
-	private int[][] shadowGrid = new int[Settings.WIDTH][Settings.HEIGHT];
+	
+	public Settings Settings;
+	
+	private int[][] grid;
+	private int[][] shadowGrid;
 	private int canvasWidth;
 	private int canvasHeight;
 	private int cellWidth;
@@ -19,13 +21,21 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 	private int y0;
 	private int dy;
 	private int ybound;
+	
+	private long systemNanoTime;
 
 	private int[] surroundings;
-
-	public CrazyPixelsCanvas() {
-		super();
-
-		Settings.choosePreset(Settings.Presets.BLUE_RIPPLES);
+	
+	
+	public CrazyPixelsCanvas(int setting, int canvasRatio) {
+		super();		
+		
+		Settings = new Settings(); 
+		Settings.setScale(canvasRatio);
+		Settings.choosePreset(setting);
+		
+		grid = new int[Settings.WIDTH][Settings.HEIGHT];
+		shadowGrid = new int[Settings.WIDTH][Settings.HEIGHT];
 		
 		for (int x = 0; x < Settings.WIDTH; x++) {
 			for (int y = 0; y < Settings.HEIGHT; y++) {
@@ -52,12 +62,25 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 					Color c;
 					if (Settings.COLOR_SMOOTHING) {
 						c = averageColor(x, y);
+						if (Settings.OUTLINES_ONLY) {
+							boolean colArrContains = false;
+							for(Color col : Settings.colorArray) {
+								if (col.getRGB() == c.getRGB()) {
+									colArrContains = true;
+								}
+							}
+							if (!colArrContains) {
+								c = Color.BLACK;
+							} else {
+								c = Color.WHITE;
+							}
+						}
 					} else {
 						int gridVal = grid[x][y];
 						c = Settings.colorArray[gridVal];
 					}
 					g.setColor(c);
-
+					
 					// System.out.println("set colour just fine.");
 					g.fillRect(x * cellWidth, y * cellHeight, cellWidth,
 							cellHeight);
@@ -178,6 +201,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 	//This method goes through the grid, updating the cells based on variable weighted factor.
 	//Each call to evolve advances the current iteration.
 	public void evolve() {
+		systemNanoTime = System.nanoTime();
 		this.canvasHeight = this.getHeight();
 		this.canvasWidth = this.getWidth();
 		this.cellHeight = (int) (canvasHeight / Settings.HEIGHT);
@@ -414,7 +438,10 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 		// and how many calls we've made to Settings.rand.nextInt
 		int lastCount = Settings.rand.getLastReport();
 		int randCount = Settings.rand.getCount();
-		System.out.println("Iteration:" + this.iteration++ + " RandomCounter:"
+		long newTime = System.nanoTime();
+		int msDuration = (int)((newTime - systemNanoTime) / 1000000);
+		systemNanoTime = newTime;
+		System.out.println("[" + msDuration + "ms] Iteration:" + this.iteration++ + " RandomCounter:"
 				+ randCount + "(" + (randCount - lastCount) + ")");
 		
 		// Colour shifting is still a WIP, it's hard to get a good gradient going
