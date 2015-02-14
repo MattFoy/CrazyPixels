@@ -22,7 +22,7 @@ public class CrazyPixelsThread extends Thread {
 				long elapse = (end - strt) / 1000000; // divide by 1000000 to
 														// get milliseconds.
 				if (elapse < iterationCap) {
-					//System.out.println("At FPS cap... waiting for: "+(iterationCap-elapse)+"ms");
+					// System.out.println("At FPS cap... waiting for: "+(iterationCap-elapse)+"ms");
 					sleep(iterationCap - elapse);
 				}
 			}
