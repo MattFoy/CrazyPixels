@@ -10,7 +10,9 @@ public class Settings {
 	public static RandomCounter rand = new RandomCounter();
 
 	public JINI jini;
-
+	
+	public int fpsCap;
+	public boolean BREAK_ON_MOUSE_MOVEMENT = false;
 	public boolean COLOR_SMOOTHING = true;
 	public int MORPH_METHOD = 0;
 	public boolean ALTERNATE_PRESETS = false;
@@ -20,7 +22,6 @@ public class Settings {
 	private double screenRatio = 2;
 	private int screenWidth = screen.width;
 	private int screenHeight = screen.height;
-
 	public int WIDTH = (int) (screenWidth / screenRatio);
 	public int HEIGHT = (int) (screenHeight / screenRatio);
 
@@ -36,17 +37,13 @@ public class Settings {
 	public boolean fuzzEdges;
 	public int chaosFactor;
 
-	public Settings(String path) {
-		try {
-			jini = new JINI(path, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public Settings(JINI jini) {
+		this.jini = jini;
 
 		String[] assertSections = new String[] { "GLOBAL", "COLOR",
 				"CALCULATION" };
 		String[][] assertKeys = new String[][] {
-				new String[] { "fpsCap", "resToCellRatio" },
+				new String[] { "fpsCap", "resToCellRatio", "BREAK_ON_MOUSE_MOVEMENT" },
 				new String[] { "rgb1", "rgb2", "rgb3", "CRUDE_OUTLINES_ONLY",
 						"COLOR_MORPH", "MORPH_METHOD", "COLOR_SMOOTHING" },
 				new String[] { "selfCount", "othersCount", "normalization",
@@ -59,7 +56,7 @@ public class Settings {
 				iniLoad();
 				System.out.println("Loaded from settings file!");
 			} catch (NumberFormatException | IOException e) {
-				// TODO Auto-generated catch block
+				System.out.println("Failed to iniLoad()");
 				e.printStackTrace();
 				choosePreset(0);
 			}
@@ -70,17 +67,27 @@ public class Settings {
 		try {
 			jini.saveFile();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+			System.out.println("Failed to iniSave()");
 			e1.printStackTrace();
 		}
 	}
 
 	public void iniLoad() throws NumberFormatException, IOException {
+		
+		//Load GLOBAL values
 		this.setScale(jini.getInt("GLOBAL", "resToCellRatio"));
+		fpsCap = jini.getInt("GLOBAL", "fpsCap");
+		BREAK_ON_MOUSE_MOVEMENT = jini.getBoolean("GLOBAL", "BREAK_ON_MOUSE_MOVEMENT");
+		
+		//Load COLOR values
 		colorArray = new Color[] { new Color(jini.getInt("COLOR", "rgb1")),
 				new Color(jini.getInt("COLOR", "rgb2")),
 				new Color(jini.getInt("COLOR", "rgb3")) };
 		OUTLINES_ONLY = jini.getBoolean("COLOR", "CRUDE_OUTLINES_ONLY");
+		COLOR_MORPH = jini.getBoolean("COLOR", "COLOR_MORPH");
+		COLOR_SMOOTHING = jini.getBoolean("COLOR", "COLOR_SMOOTHING");
+		
+		//Load CALCULATION values
 		selfCount = jini.getInt("CALCULATION", "selfCount");
 		othersCount = jini.getInt("CALCULATION", "othersCount");
 		normalization = jini.getInt("CALCULATION", "normalization");
@@ -89,8 +96,33 @@ public class Settings {
 		randScrand = jini.getBoolean("CALCULATION", "randScrand");
 		fuzzEdges = jini.getBoolean("CALCULATION", "fuzzEdges");
 		chaosFactor = jini.getInt("CALCULATION", "chaosFactor");
-		COLOR_MORPH = jini.getBoolean("COLOR", "COLOR_MORPH");
-		COLOR_SMOOTHING = jini.getBoolean("COLOR", "COLOR_SMOOTHING");
+	}
+	
+	public void iniSave() throws NumberFormatException, IOException {
+		//Save GLOBAL section
+		jini.setKVP("GLOBAL", "resToCellRatio", screenRatio + "");
+		jini.setKVP("GLOBAL", "fpsCap", fpsCap + "");
+		jini.setKVP("GLOBAL", "BREAK_ON_MOUSE_MOVEMENT", BREAK_ON_MOUSE_MOVEMENT + "");
+		
+		//Save COLOR section
+		jini.setKVP("COLOR", "rgb1", colorArray[0].getRGB() + "");
+		jini.setKVP("COLOR", "rgb2", colorArray[1].getRGB() + "");
+		jini.setKVP("COLOR", "rgb3", colorArray[2].getRGB() + "");
+		jini.setKVP("COLOR", "CRUDE_OUTLINES_ONLY", OUTLINES_ONLY + "");
+		jini.setKVP("COLOR", "COLOR_MORPH", COLOR_MORPH + "");
+		jini.setKVP("COLOR", "COLOR_SMOOTHING", COLOR_SMOOTHING + "");
+		
+		//Save CALCULATION section
+		jini.setKVP("CALCULATION", "selfCount", selfCount + "");
+		jini.setKVP("CALCULATION", "othersCount", othersCount + "");
+		jini.setKVP("CALCULATION", "normalization", normalization + "");
+		jini.setKVP("CALCULATION", "useShadowGrid", useShadowGrid + "");
+		jini.setKVP("CALCULATION", "scrandomize", scrandomize + "");
+		jini.setKVP("CALCULATION", "randScrand", randScrand + "");
+		jini.setKVP("CALCULATION", "fuzzEdges", fuzzEdges + "");
+		jini.setKVP("CALCULATION", "chaosFactor", chaosFactor + "");
+		
+		jini.saveFile();
 	}
 
 	public void setScale(int scale) {
@@ -194,6 +226,12 @@ public class Settings {
 			chaosFactor = 1;
 			COLOR_MORPH = false;
 			break;
+		}
+		try {
+			iniSave();
+		} catch (NumberFormatException | IOException e) {
+			System.out.println("Failed to iniSave()");
+			e.printStackTrace();
 		}
 	}
 

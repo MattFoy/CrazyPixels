@@ -7,6 +7,8 @@ import java.awt.Image;
 
 public abstract class DoubleBufferCanvas extends Canvas {
 
+	private static final long serialVersionUID = 8254527876003743779L;
+
 	public DoubleBufferCanvas() {
 		super();
 	}

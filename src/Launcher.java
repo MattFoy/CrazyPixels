@@ -1,14 +1,23 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import foy.util.JINI;
 
 public class Launcher {
 
 	private Frame mainFrame;
+	private static JINI jini = null;
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		try {
+			jini = new JINI("CrazyPixelSettings.ini", true);
+		} catch (IOException e) {
+			System.out.println("Failed to instantiate JINI");
+			e.printStackTrace();
+		}
+		
 		if (args.length > 0) {
 			if (args[0] == "/c") {
 				configure();
@@ -46,7 +55,7 @@ public class Launcher {
 												// mini-displays instead
 												// of using the whole
 												// screen
-				if (false) {
+				if (splitScreen) {
 					// Launch a canvas for each screen
 					Rectangle r = gc[i].getBounds();
 					Rectangle[] bounds = new Rectangle[4];
@@ -96,13 +105,11 @@ public class Launcher {
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				// TODO Auto-generated method stub
 
 			}
 		});
@@ -119,7 +126,26 @@ public class Launcher {
 		// Set the blank cursor to the JFrame.
 		mainFrame.setCursor(blankCursor);
 
-		CrazyPixelsCanvas canv = new CrazyPixelsCanvas(preset, canvasRatio);
+		CrazyPixelsCanvas canv = new CrazyPixelsCanvas(jini);
+		if (canv.settings.BREAK_ON_MOUSE_MOVEMENT) {
+			mainFrame.addMouseMotionListener(new MouseMotionListener() {
+				
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					mainFrame.dispose();
+					System.exit(0);
+					return;
+				}
+				
+				@Override
+				public void mouseDragged(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		}
+		
 		canv.setBackground(Color.BLACK);
 		mainFrame.add(canv);
 		mainFrame.setVisible(true);

@@ -2,6 +2,8 @@ import java.util.Random;
 
 
 public class RandomCounter extends Random {
+
+	private static final long serialVersionUID = 5592690872012592508L;
 	private int count;
 	private int lastReport;
 	

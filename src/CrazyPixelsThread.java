@@ -1,8 +1,3 @@
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.util.Random;
-
 //This class is simply a Thread class which contains a CrazyPixelCanvas element in addition to overloading the run method.
 public class CrazyPixelsThread extends Thread {
 	private CrazyPixelsCanvas cpc;
@@ -13,7 +8,7 @@ public class CrazyPixelsThread extends Thread {
 
 	public void run() {
 		try {
-			int fpsCap = 20;
+			int fpsCap = cpc.settings.fpsCap;
 			int iterationCap = (1000 / fpsCap);
 			while (true) {
 				long strt = System.nanoTime();
@@ -30,5 +25,4 @@ public class CrazyPixelsThread extends Thread {
 			System.out.println("interrupted:" + e.getMessage());
 		}
 	}
-
 }
