@@ -31,9 +31,8 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 	public CrazyPixelsCanvas(JINI jini) {
 		super();
-
 		settings = new Settings(jini);
-		//settings.choosePreset(setting);
+		//settings.choosePreset(3);
 		for (Color c : settings.colorArray) {
 			System.out.println(c.getRGB());
 		}
@@ -58,6 +57,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 	}
 
 	public void paintBuffer(Graphics g) {
+		Color [] paintBufferColorArray = settings.colorArray.clone();
 		// / g is the offscreen graphics
 		if (iteration > 6) {
 			for (int x = 0; x < settings.WIDTH; x++) {
@@ -65,10 +65,10 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 					// System.out.println("Pos ("+x+","+y+"): " + grid[x][y]);
 					Color c;
 					if (settings.COLOR_SMOOTHING) {
-						c = averageColor(x, y);
+						c = averageColor(paintBufferColorArray, x, y);
 						if (settings.OUTLINES_ONLY) {
 							boolean colArrContains = false;
-							for (Color col : settings.colorArray) {
+							for (Color col : paintBufferColorArray) {
 								if (col.getRGB() == c.getRGB()) {
 									colArrContains = true;
 								}
@@ -81,7 +81,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 						}
 					} else {
 						int gridVal = grid[x][y];
-						c = settings.colorArray[gridVal];
+						c = paintBufferColorArray[gridVal];
 					}
 					g.setColor(c);
 
@@ -90,14 +90,15 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 							cellHeight);
 				}
 			}
+			
+			// This creates a
 			if (settings.fuzzEdges) {
 				this.canvasHeight = this.getHeight();
 				this.canvasWidth = this.getWidth();
 				g.setColor(Color.BLACK);
-				g.drawRect(0, 0, this.canvasWidth - 1, this.canvasHeight - 1);
-				g.drawRect(1, 1, this.canvasWidth - 3, this.canvasHeight - 3);
-				g.drawRect(2, 2, this.canvasWidth - 5, this.canvasHeight - 5);
-				g.drawRect(3, 3, this.canvasWidth - 7, this.canvasHeight - 7);
+				for (int i = 0; i <= settings.borderThickness; i++) {
+					g.drawRect(i, i, this.canvasWidth - (2*i+1), this.canvasHeight - (2*i+1));
+				}
 			}
 		}
 	}
@@ -107,13 +108,13 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 	// R, G, and B channels. This makes the colours less stark and somewhat
 	// smoother. It softens the image but
 	// unfortunately makes it look more "out of focus" than smooth.
-	public Color averageColor(int x, int y) {
+	public Color averageColor(Color[] paintBufferColorArray, int x, int y) {
 		int[] rgbTotals = new int[] { 0, 0, 0 };
 		Color c;
 		int avgCount = 0;
 		// Top left
 		try {
-			c = settings.colorArray[grid[x - 1][y - 1]];
+			c = paintBufferColorArray[grid[x - 1][y - 1]];
 			avgCount++;
 			rgbTotals[0] += c.getRed();
 			rgbTotals[1] += c.getGreen();
@@ -123,7 +124,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Top
 		try {
-			c = settings.colorArray[grid[x][y - 1]];
+			c = paintBufferColorArray[grid[x][y - 1]];
 			avgCount++;
 			rgbTotals[0] += c.getRed();
 			rgbTotals[1] += c.getGreen();
@@ -133,7 +134,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Top right
 		try {
-			c = settings.colorArray[grid[x + 1][y - 1]];
+			c = paintBufferColorArray[grid[x + 1][y - 1]];
 			avgCount++;
 			rgbTotals[0] += c.getRed();
 			rgbTotals[1] += c.getGreen();
@@ -143,7 +144,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Left
 		try {
-			c = settings.colorArray[grid[x - 1][y]];
+			c = paintBufferColorArray[grid[x - 1][y]];
 			avgCount++;
 			rgbTotals[0] += c.getRed();
 			rgbTotals[1] += c.getGreen();
@@ -153,7 +154,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Right
 		try {
-			c = settings.colorArray[grid[x + 1][y]];
+			c = paintBufferColorArray[grid[x + 1][y]];
 			avgCount++;
 			rgbTotals[0] += c.getRed();
 			rgbTotals[1] += c.getGreen();
@@ -163,7 +164,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Bottom left
 		try {
-			c = settings.colorArray[grid[x - 1][y + 1]];
+			c = paintBufferColorArray[grid[x - 1][y + 1]];
 			avgCount++;
 			rgbTotals[0] += c.getRed();
 			rgbTotals[1] += c.getGreen();
@@ -173,7 +174,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Bottom
 		try {
-			c = settings.colorArray[grid[x][y + 1]];
+			c = paintBufferColorArray[grid[x][y + 1]];
 			avgCount++;
 			rgbTotals[0] += c.getRed();
 			rgbTotals[1] += c.getGreen();
@@ -183,7 +184,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Bottom Right
 		try {
-			c = settings.colorArray[grid[x + 1][y + 1]];
+			c = paintBufferColorArray[grid[x + 1][y + 1]];
 			avgCount++;
 			rgbTotals[0] += c.getRed();
 			rgbTotals[1] += c.getGreen();
@@ -192,7 +193,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 		}
 
 		// Self
-		c = settings.colorArray[grid[x][y]];
+		c = paintBufferColorArray[grid[x][y]];
 		int selfWeight = 3;
 		avgCount += selfWeight;
 		rgbTotals[0] += c.getRed() * selfWeight;
@@ -466,7 +467,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Colour shifting is still a WIP, it's hard to get a good gradient
 		// going
-		if (settings.COLOR_MORPH && this.iteration % 5 == 0) {
+		if (settings.COLOR_MORPH && this.iteration % 4 == 0) {
 			for (int i = 0; i < settings.colorArray.length; i++) {
 				if (settings.MORPH_METHOD == 0) {
 					int newR = Math
@@ -500,7 +501,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 																			.nextInt(2)) * Settings.rand
 															.nextInt(7)))));
 					settings.colorArray[i] = new Color(newR, newG, newB);
-				} else {
+				} else if (settings.MORPH_METHOD == 1) {
 					int rainbowIdx = --settings.colorShiftArray[i].steps;
 					if (rainbowIdx < 0) {
 						rainbowIdx = settings.colorShiftArray[i].rainbow.size() - 1;

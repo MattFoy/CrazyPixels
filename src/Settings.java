@@ -11,19 +11,21 @@ public class Settings {
 
 	public JINI jini;
 	
-	public int fpsCap;
+	public int fpsCap = 30;
 	public boolean BREAK_ON_MOUSE_MOVEMENT = false;
 	public boolean COLOR_SMOOTHING = true;
 	public int MORPH_METHOD = 0;
 	public boolean ALTERNATE_PRESETS = false;
 	public boolean OUTLINES_ONLY = false;
+	public boolean SPLIT_SCREEN = false;
 
 	private Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-	private double screenRatio = 2;
+	private int screenRatio = 2;
 	private int screenWidth = screen.width;
 	private int screenHeight = screen.height;
 	public int WIDTH = (int) (screenWidth / screenRatio);
 	public int HEIGHT = (int) (screenHeight / screenRatio);
+	public int borderThickness = 1;
 
 	public boolean COLOR_MORPH;
 	public Color[] colorArray;
@@ -43,9 +45,9 @@ public class Settings {
 		String[] assertSections = new String[] { "GLOBAL", "COLOR",
 				"CALCULATION" };
 		String[][] assertKeys = new String[][] {
-				new String[] { "fpsCap", "resToCellRatio", "BREAK_ON_MOUSE_MOVEMENT" },
+				new String[] { "fpsCap", "resToCellRatio", "BREAK_ON_MOUSE_MOVEMENT", "SPLIT_SCREEN" },
 				new String[] { "rgb1", "rgb2", "rgb3", "CRUDE_OUTLINES_ONLY",
-						"COLOR_MORPH", "MORPH_METHOD", "COLOR_SMOOTHING" },
+						"COLOR_MORPH", "MORPH_METHOD", "COLOR_SMOOTHING", "borderThickness" },
 				new String[] { "selfCount", "othersCount", "normalization",
 						"useShadowGrid", "scrandomize", "randScrand",
 						"fuzzEdges", "chaosFactor" } };
@@ -59,25 +61,36 @@ public class Settings {
 				System.out.println("Failed to iniLoad()");
 				e.printStackTrace();
 				choosePreset(0);
+				try {
+					jini.saveFile();
+				} catch (IOException e1) {
+					System.out.println("Failed to iniSave()");
+					e1.printStackTrace();
+				}
 			}
 		} else {
 			System.out.println(verificationResult);
 			choosePreset(0);
-		}
-		try {
-			jini.saveFile();
-		} catch (IOException e1) {
-			System.out.println("Failed to iniSave()");
-			e1.printStackTrace();
+			
+			try {
+				jini.saveFile();
+			} catch (IOException e1) {
+				System.out.println("Failed to iniSave()");
+				e1.printStackTrace();
+			}
 		}
 	}
 
 	public void iniLoad() throws NumberFormatException, IOException {
 		
-		//Load GLOBAL values
-		this.setScale(jini.getInt("GLOBAL", "resToCellRatio"));
+		//Load GLOBAL values		
 		fpsCap = jini.getInt("GLOBAL", "fpsCap");
 		BREAK_ON_MOUSE_MOVEMENT = jini.getBoolean("GLOBAL", "BREAK_ON_MOUSE_MOVEMENT");
+		SPLIT_SCREEN = jini.getBoolean("GLOBAL", "SPLIT_SCREEN");
+		screenRatio = jini.getInt("GLOBAL", "resToCellRatio");
+		if (SPLIT_SCREEN) {
+			screenRatio *= 2;
+		}
 		
 		//Load COLOR values
 		colorArray = new Color[] { new Color(jini.getInt("COLOR", "rgb1")),
@@ -86,6 +99,7 @@ public class Settings {
 		OUTLINES_ONLY = jini.getBoolean("COLOR", "CRUDE_OUTLINES_ONLY");
 		COLOR_MORPH = jini.getBoolean("COLOR", "COLOR_MORPH");
 		COLOR_SMOOTHING = jini.getBoolean("COLOR", "COLOR_SMOOTHING");
+		borderThickness = jini.getInt("COLOR", "borderThickness");
 		
 		//Load CALCULATION values
 		selfCount = jini.getInt("CALCULATION", "selfCount");
@@ -96,13 +110,16 @@ public class Settings {
 		randScrand = jini.getBoolean("CALCULATION", "randScrand");
 		fuzzEdges = jini.getBoolean("CALCULATION", "fuzzEdges");
 		chaosFactor = jini.getInt("CALCULATION", "chaosFactor");
+		
+		this.setScale();
 	}
 	
 	public void iniSave() throws NumberFormatException, IOException {
 		//Save GLOBAL section
-		jini.setKVP("GLOBAL", "resToCellRatio", screenRatio + "");
+		jini.setKVP("GLOBAL", "resToCellRatio", (SPLIT_SCREEN ? screenRatio/2 : screenRatio) + "");
 		jini.setKVP("GLOBAL", "fpsCap", fpsCap + "");
 		jini.setKVP("GLOBAL", "BREAK_ON_MOUSE_MOVEMENT", BREAK_ON_MOUSE_MOVEMENT + "");
+		jini.setKVP("GLOBAL", "SPLIT_SCREEN", SPLIT_SCREEN + "");
 		
 		//Save COLOR section
 		jini.setKVP("COLOR", "rgb1", colorArray[0].getRGB() + "");
@@ -110,7 +127,8 @@ public class Settings {
 		jini.setKVP("COLOR", "rgb3", colorArray[2].getRGB() + "");
 		jini.setKVP("COLOR", "CRUDE_OUTLINES_ONLY", OUTLINES_ONLY + "");
 		jini.setKVP("COLOR", "COLOR_MORPH", COLOR_MORPH + "");
-		jini.setKVP("COLOR", "COLOR_SMOOTHING", COLOR_SMOOTHING + "");
+		jini.setKVP("COLOR", "COLOR_SMOOTHING", COLOR_SMOOTHING + ""); 
+		jini.setKVP("COLOR", "borderThickness", borderThickness + "");
 		
 		//Save CALCULATION section
 		jini.setKVP("CALCULATION", "selfCount", selfCount + "");
@@ -125,9 +143,8 @@ public class Settings {
 		jini.saveFile();
 	}
 
-	public void setScale(int scale) {
-		screenRatio = scale;
-
+	public void setScale() {
+		//screenRatio = scale;		
 		WIDTH = (int) (screenWidth / screenRatio);
 		HEIGHT = (int) (screenHeight / screenRatio);
 	}
@@ -176,7 +193,7 @@ public class Settings {
 			break;
 		case 3:
 			// Making ripples Black/Blue
-			colorArray = new Color[] { Color.BLUE, Color.BLACK, Color.WHITE };
+			colorArray = new Color[] { Color.BLUE, Color.BLUE, Color.WHITE };
 			selfCount = -1;
 			othersCount = 1;
 			normalization = 1;
@@ -226,12 +243,6 @@ public class Settings {
 			chaosFactor = 1;
 			COLOR_MORPH = false;
 			break;
-		}
-		try {
-			iniSave();
-		} catch (NumberFormatException | IOException e) {
-			System.out.println("Failed to iniSave()");
-			e.printStackTrace();
 		}
 	}
 
