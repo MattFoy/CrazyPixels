@@ -12,6 +12,7 @@ public class ColorShift {
 	public static Color[] goodColors = new Color[] { Color.RED, Color.GREEN,
 			Color.BLUE, Color.BLACK, Color.WHITE };
 
+	// based on http://krazydad.com/tutorials/makecolors.php
 	public ArrayList<Color> makeColorGradient(double frequency1,
 			double frequency2, double frequency3, double phase1, double phase2,
 			double phase3) {
