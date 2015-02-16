@@ -91,7 +91,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 				}
 			}
 			
-			// This creates a
+			// This creates a border as thick as specified by borderThickness in the settings.
 			if (settings.fuzzEdges) {
 				this.canvasHeight = this.getHeight();
 				this.canvasWidth = this.getWidth();
