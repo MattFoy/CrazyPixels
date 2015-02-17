@@ -2,24 +2,32 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public class ColorShift {
-	public int steps;
+	public int rainbowIdx = 0;
 	public ArrayList<Color> rainbow;
 
 	public ColorShift() {
-		rainbow = makeColorGradient(0, 2, 4);
+		rainbow = makeColorGradient();
 	}
 
 	// based on http://krazydad.com/tutorials/makecolors.php
-	public ArrayList<Color> makeColorGradient(double phase1, double phase2,
-			double phase3) {
-		int center = Settings.rand.nextInt(50) + 100;
-		int width = Settings.rand.nextInt(50) + 100;
-		int len = Settings.rand.nextInt(50) + 500;
+	public ArrayList<Color> makeColorGradient() {		
+		double phase1 = (0.1 * Settings.rand.nextInt(40));
+		double phase2 = (0.1 * Settings.rand.nextInt(40));
+		double phase3 = (0.1 * Settings.rand.nextInt(40));
+		
+		int center = Settings.rand.nextInt(100) + 100;
+		int width = Settings.rand.nextInt(100) + 50;
+		int len = Settings.rand.nextInt(200) + 200;
 		
 		double frequency = 2 * Math.PI / len;
-		double frequency1 = frequency;
-		double frequency2 = frequency; 
-		double frequency3 = frequency;
+		//System.out.println("Frequency: " + frequency);
+		double frequency1 = frequency * ((Settings.rand.nextInt(50) / 10) + 1);
+		double frequency2 = frequency * ((Settings.rand.nextInt(50) / 10) + 1); 
+		double frequency3 = frequency * ((Settings.rand.nextInt(50) / 10) + 1);
+
+		//System.out.println("Frequency 1: " + frequency1);
+		//System.out.println("Frequency 2: " + frequency2);
+		//System.out.println("Frequency 3: " + frequency3);
 		
 		ArrayList<Color> res = new ArrayList<Color>();
 		if (len == 0)

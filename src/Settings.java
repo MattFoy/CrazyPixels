@@ -98,6 +98,7 @@ public class Settings {
 				new Color(jini.getInt("COLOR", "rgb3")) };
 		OUTLINES_ONLY = jini.getBoolean("COLOR", "CRUDE_OUTLINES_ONLY");
 		COLOR_MORPH = jini.getBoolean("COLOR", "COLOR_MORPH");
+		MORPH_METHOD = jini.getInt("COLOR", "MORPH_METHOD");
 		COLOR_SMOOTHING = jini.getBoolean("COLOR", "COLOR_SMOOTHING");
 		borderThickness = jini.getInt("COLOR", "borderThickness");
 		
@@ -127,6 +128,7 @@ public class Settings {
 		jini.setKVP("COLOR", "rgb3", colorArray[2].getRGB() + "");
 		jini.setKVP("COLOR", "CRUDE_OUTLINES_ONLY", OUTLINES_ONLY + "");
 		jini.setKVP("COLOR", "COLOR_MORPH", COLOR_MORPH + "");
+		jini.setKVP("COLOR", "MORPH_METHOD", MORPH_METHOD + "");
 		jini.setKVP("COLOR", "COLOR_SMOOTHING", COLOR_SMOOTHING + ""); 
 		jini.setKVP("COLOR", "borderThickness", borderThickness + "");
 		

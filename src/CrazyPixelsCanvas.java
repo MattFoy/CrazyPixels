@@ -467,7 +467,7 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Colour shifting is still a WIP, it's hard to get a good gradient
 		// going
-		if (settings.COLOR_MORPH && this.iteration % 1 == 0) {
+		if (settings.COLOR_MORPH && this.iteration % 3 == 0) {
 			for (int i = 0; i < settings.colorArray.length; i++) {
 				if (settings.MORPH_METHOD == 0) {
 					int newR = Math
@@ -502,13 +502,20 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 															.nextInt(7)))));
 					settings.colorArray[i] = new Color(newR, newG, newB);
 				} else if (settings.MORPH_METHOD == 1) {
-					int rainbowIdx = --settings.colorShiftArray[i].steps;
-					if (rainbowIdx < 0) {
-						rainbowIdx = settings.colorShiftArray[i].rainbow.size() - 1;
-						settings.colorShiftArray[i].steps = rainbowIdx;
+					if (settings.colorShiftArray[i].rainbowIdx >= settings.colorShiftArray[i].rainbow.size() - 1) {
+						settings.colorShiftArray[i].rainbowIdx = 0;
 					}
+					Color oldC = settings.colorArray[i];
 					settings.colorArray[i] = settings.colorShiftArray[i].rainbow
-							.get(rainbowIdx);
+							.get(++settings.colorShiftArray[i].rainbowIdx);
+					
+					int dR = Math.abs(oldC.getRed() - settings.colorArray[i].getRed());
+					int dG = Math.abs(oldC.getGreen() - settings.colorArray[i].getGreen());
+					int dB = Math.abs(oldC.getBlue() - settings.colorArray[i].getBlue());
+					System.out.println("dR:" + dR + ", dG:" + dG + ", dB:" + dB);
+					if ((dR + dG + dB) > 10) {
+						System.out.println("JARRED??");
+					}
 				}
 			}
 		}
