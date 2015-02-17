@@ -21,9 +21,9 @@ public class ColorShift {
 		
 		double frequency = 2 * Math.PI / len;
 		//System.out.println("Frequency: " + frequency);
-		double frequency1 = frequency * ((Settings.rand.nextInt(50) / 10) + 1);
-		double frequency2 = frequency * ((Settings.rand.nextInt(50) / 10) + 1); 
-		double frequency3 = frequency * ((Settings.rand.nextInt(50) / 10) + 1);
+		double frequency1 = frequency * ((Settings.rand.nextInt(20) / 10) + 1);
+		double frequency2 = frequency * ((Settings.rand.nextInt(20) / 10) + 1); 
+		double frequency3 = frequency * ((Settings.rand.nextInt(20) / 10) + 1);
 
 		//System.out.println("Frequency 1: " + frequency1);
 		//System.out.println("Frequency 2: " + frequency2);
