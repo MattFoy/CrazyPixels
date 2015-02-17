@@ -465,8 +465,8 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 				+ this.iteration++ + " RandomCounter:" + randCount + "("
 				+ (randCount - lastCount) + ")");
 
-		// Colour shifting is still a WIP, it's hard to get a good gradient
-		// going
+		// Colour shifting is still a WIP, it's hard to 
+		// get a good gradient going
 		if (settings.COLOR_MORPH && this.iteration % settings.colourShiftInterval == 0) {
 			for (int i = 0; i < settings.colorArray.length; i++) {
 				if (settings.MORPH_METHOD == 0) {
