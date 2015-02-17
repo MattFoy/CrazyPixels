@@ -6,19 +6,21 @@ public class ColorShift {
 	public ArrayList<Color> rainbow;
 
 	public ColorShift() {
-		rainbow = makeColorGradient(.1, .1, .1, 0, 2, 4);
+		rainbow = makeColorGradient(0, 2, 4);
 	}
 
-	public static Color[] goodColors = new Color[] { Color.RED, Color.GREEN,
-			Color.BLUE, Color.BLACK, Color.WHITE };
-
 	// based on http://krazydad.com/tutorials/makecolors.php
-	public ArrayList<Color> makeColorGradient(double frequency1,
-			double frequency2, double frequency3, double phase1, double phase2,
+	public ArrayList<Color> makeColorGradient(double phase1, double phase2,
 			double phase3) {
 		int center = Settings.rand.nextInt(50) + 100;
 		int width = Settings.rand.nextInt(50) + 100;
-		int len = Settings.rand.nextInt(50) + 50;
+		int len = Settings.rand.nextInt(50) + 500;
+		
+		double frequency = 2 * Math.PI / len;
+		double frequency1 = frequency;
+		double frequency2 = frequency; 
+		double frequency3 = frequency;
+		
 		ArrayList<Color> res = new ArrayList<Color>();
 		if (len == 0)
 			return res;
