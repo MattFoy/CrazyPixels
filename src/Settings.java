@@ -6,11 +6,11 @@ import java.io.IOException;
 import foy.util.JINI;
 
 public class Settings {
-	
+
 	public static RandomCounter rand = new RandomCounter();
 
 	public JINI jini;
-	
+
 	public int fpsCap = 30;
 	public boolean BREAK_ON_MOUSE_MOVEMENT = false;
 	public boolean COLOR_SMOOTHING = true;
@@ -26,7 +26,7 @@ public class Settings {
 	public int WIDTH = (int) (screenWidth / screenRatio);
 	public int HEIGHT = (int) (screenHeight / screenRatio);
 	public int borderThickness = 1;
-
+	public int colourShiftInterval = 2;
 	public boolean COLOR_MORPH;
 	public Color[] colorArray;
 	public ColorShift[] colorShiftArray;
@@ -45,13 +45,16 @@ public class Settings {
 		String[] assertSections = new String[] { "GLOBAL", "COLOR",
 				"CALCULATION" };
 		String[][] assertKeys = new String[][] {
-				new String[] { "fpsCap", "resToCellRatio", "BREAK_ON_MOUSE_MOVEMENT", "SPLIT_SCREEN" },
+				new String[] { "fpsCap", "resToCellRatio",
+						"BREAK_ON_MOUSE_MOVEMENT", "SPLIT_SCREEN" },
 				new String[] { "rgb1", "rgb2", "rgb3", "CRUDE_OUTLINES_ONLY",
-						"COLOR_MORPH", "MORPH_METHOD", "COLOR_SMOOTHING", "borderThickness" },
+						"colourShiftInterval", "COLOR_MORPH", "MORPH_METHOD",
+						"COLOR_SMOOTHING", "borderThickness" },
 				new String[] { "selfCount", "othersCount", "normalization",
 						"useShadowGrid", "scrandomize", "randScrand",
 						"fuzzEdges", "chaosFactor" } };
-		String verificationResult = jini.verify(assertSections, assertKeys, false);
+		String verificationResult = jini.verify(assertSections, assertKeys,
+				false);
 		if (verificationResult.length() == 0) {
 			// try to load values from file
 			try {
@@ -71,7 +74,7 @@ public class Settings {
 		} else {
 			System.out.println(verificationResult);
 			choosePreset(0);
-			
+
 			try {
 				jini.saveFile();
 			} catch (IOException e1) {
@@ -82,17 +85,18 @@ public class Settings {
 	}
 
 	public void iniLoad() throws NumberFormatException, IOException {
-		
-		//Load GLOBAL values		
+
+		// Load GLOBAL values
 		fpsCap = jini.getInt("GLOBAL", "fpsCap");
-		BREAK_ON_MOUSE_MOVEMENT = jini.getBoolean("GLOBAL", "BREAK_ON_MOUSE_MOVEMENT");
+		BREAK_ON_MOUSE_MOVEMENT = jini.getBoolean("GLOBAL",
+				"BREAK_ON_MOUSE_MOVEMENT");
 		SPLIT_SCREEN = jini.getBoolean("GLOBAL", "SPLIT_SCREEN");
 		screenRatio = jini.getInt("GLOBAL", "resToCellRatio");
 		if (SPLIT_SCREEN) {
 			screenRatio *= 2;
 		}
-		
-		//Load COLOR values
+
+		// Load COLOR values
 		colorArray = new Color[] { new Color(jini.getInt("COLOR", "rgb1")),
 				new Color(jini.getInt("COLOR", "rgb2")),
 				new Color(jini.getInt("COLOR", "rgb3")) };
@@ -101,8 +105,9 @@ public class Settings {
 		MORPH_METHOD = jini.getInt("COLOR", "MORPH_METHOD");
 		COLOR_SMOOTHING = jini.getBoolean("COLOR", "COLOR_SMOOTHING");
 		borderThickness = jini.getInt("COLOR", "borderThickness");
-		
-		//Load CALCULATION values
+		colourShiftInterval = jini.getInt("COLOR", "colourShiftInterval");
+
+		// Load CALCULATION values
 		selfCount = jini.getInt("CALCULATION", "selfCount");
 		othersCount = jini.getInt("CALCULATION", "othersCount");
 		normalization = jini.getInt("CALCULATION", "normalization");
@@ -111,28 +116,31 @@ public class Settings {
 		randScrand = jini.getBoolean("CALCULATION", "randScrand");
 		fuzzEdges = jini.getBoolean("CALCULATION", "fuzzEdges");
 		chaosFactor = jini.getInt("CALCULATION", "chaosFactor");
-		
+
 		this.setScale();
 	}
-	
+
 	public void iniSave() throws NumberFormatException, IOException {
-		//Save GLOBAL section
-		jini.setKVP("GLOBAL", "resToCellRatio", (SPLIT_SCREEN ? screenRatio/2 : screenRatio) + "");
+		// Save GLOBAL section
+		jini.setKVP("GLOBAL", "resToCellRatio", (SPLIT_SCREEN ? screenRatio / 2
+				: screenRatio) + "");
 		jini.setKVP("GLOBAL", "fpsCap", fpsCap + "");
-		jini.setKVP("GLOBAL", "BREAK_ON_MOUSE_MOVEMENT", BREAK_ON_MOUSE_MOVEMENT + "");
+		jini.setKVP("GLOBAL", "BREAK_ON_MOUSE_MOVEMENT",
+				BREAK_ON_MOUSE_MOVEMENT + "");
 		jini.setKVP("GLOBAL", "SPLIT_SCREEN", SPLIT_SCREEN + "");
-		
-		//Save COLOR section
+
+		// Save COLOR section
 		jini.setKVP("COLOR", "rgb1", colorArray[0].getRGB() + "");
 		jini.setKVP("COLOR", "rgb2", colorArray[1].getRGB() + "");
 		jini.setKVP("COLOR", "rgb3", colorArray[2].getRGB() + "");
 		jini.setKVP("COLOR", "CRUDE_OUTLINES_ONLY", OUTLINES_ONLY + "");
 		jini.setKVP("COLOR", "COLOR_MORPH", COLOR_MORPH + "");
 		jini.setKVP("COLOR", "MORPH_METHOD", MORPH_METHOD + "");
-		jini.setKVP("COLOR", "COLOR_SMOOTHING", COLOR_SMOOTHING + ""); 
+		jini.setKVP("COLOR", "colourShiftInterval", colourShiftInterval + "");
+		jini.setKVP("COLOR", "COLOR_SMOOTHING", COLOR_SMOOTHING + "");
 		jini.setKVP("COLOR", "borderThickness", borderThickness + "");
-		
-		//Save CALCULATION section
+
+		// Save CALCULATION section
 		jini.setKVP("CALCULATION", "selfCount", selfCount + "");
 		jini.setKVP("CALCULATION", "othersCount", othersCount + "");
 		jini.setKVP("CALCULATION", "normalization", normalization + "");
@@ -141,12 +149,12 @@ public class Settings {
 		jini.setKVP("CALCULATION", "randScrand", randScrand + "");
 		jini.setKVP("CALCULATION", "fuzzEdges", fuzzEdges + "");
 		jini.setKVP("CALCULATION", "chaosFactor", chaosFactor + "");
-		
+
 		jini.saveFile();
 	}
 
 	public void setScale() {
-		//screenRatio = scale;		
+		// screenRatio = scale;
 		WIDTH = (int) (screenWidth / screenRatio);
 		HEIGHT = (int) (screenHeight / screenRatio);
 	}
