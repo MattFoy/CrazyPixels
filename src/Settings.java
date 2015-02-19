@@ -54,7 +54,7 @@ public class Settings {
 						"useShadowGrid", "scrandomize", "randScrand",
 						"fuzzEdges", "chaosFactor" } };
 		String verificationResult = jini.verify(assertSections, assertKeys,
-				false);
+				true);
 		if (verificationResult.length() == 0) {
 			// try to load values from file
 			try {

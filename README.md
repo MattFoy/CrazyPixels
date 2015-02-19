@@ -12,3 +12,5 @@ Build into a .jar, wrap in a .exe, rename to .scr and it's a screensaver.
 (Would be nice to account for /p /s /c command line args)
 
 Create a setting to control the speed at which colour transitions take place.
+
+Fix issue with screen resolution / multi monitor setups.
