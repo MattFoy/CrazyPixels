@@ -8,9 +8,7 @@ Additionally, the Settings file contains a number of preset combinations that yi
 
 Create and imbed demo videos.
 
-Put settings into a .ini file and create a GUI to configure values
-
-Build into a .jar, wrap in a .exe, rename to .scr and bam, screensaver.
+Build into a .jar, wrap in a .exe, rename to .scr and it's a screensaver.
 (Would be nice to account for /p /s /c command line args)
 
-Make colour transitions more gentle / subtle to avoid jarring transitions.
+Create a setting to control the speed at which colour transitions take place.
