@@ -4,7 +4,9 @@ Cellular autotmata screensaver with a colourful rock-paper-scissors implementati
 To configure the way the cellular automata behave there is a Settings file that contain static variables that control many aspects of the calculations.
 Additionally, the Settings file contains a number of preset combinations that yield interesting results.
 
-This design was originally inspired by the video: https://www.youtube.com/watch?v=M4cV0nCIZoc
+This design was originally inspired by the article and video here: http://www.gamedev.net/blog/844/entry-2249737-another-cellular-automaton-video/
+
+
 But I found that if the settings were tweaked you could produce even more interesting results and patterns!
 
 ## DEMOS
