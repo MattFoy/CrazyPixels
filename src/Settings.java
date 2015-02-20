@@ -203,7 +203,7 @@ public class Settings {
 			break;
 		case 3:
 			// Making ripples Black/Blue
-			colorArray = new Color[] { Color.BLUE, Color.BLUE, Color.WHITE };
+			colorArray = new Color[] { Color.WHITE, Color.BLUE, Color.BLACK };
 			selfCount = -1;
 			othersCount = 1;
 			normalization = 1;
