@@ -1,8 +1,8 @@
 # CrazyPixels
 Cellular autotmata screensaver with a colourful rock-paper-scissors implementation.
 
-To configure the way the cellular automata behave there is a Settings file that contain static variables that control many aspects of the calculations.
-Additionally, the Settings file contains a number of preset combinations that yield interesting results.
+To configure the way the cellular automata behave there is a CrazyPixelSettings.ini file that contain variables that control many aspects of the calculations.
+Additionally, there are a number of preset combinations that yield interesting results. These can be accessed by passing the command line argument "/c" for "configure".
 
 This design was originally inspired by the article and video here: http://www.gamedev.net/blog/844/entry-2249737-another-cellular-automaton-video/
 
