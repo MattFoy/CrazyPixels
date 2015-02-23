@@ -9,14 +9,9 @@ This design was originally inspired by the article and video here: http://www.ga
 
 But I found that if the settings were tweaked you could produce even more interesting results and patterns!
 
-## DEMOS
-Each sample highlights a unique combination of settings to create a mesmerizing outcome. Enjoy!
+## DEMO
 
-Sample 1: https://www.youtube.com/watch?v=5ewVk0Ebm00
-
-Sample 2: https://www.youtube.com/watch?v=ufVI53T7ckU
-
-Sample 3: https://www.youtube.com/watch?v=z-IbhmgCHsw
+10min (with music): https://www.youtube.com/watch?v=TS1BvGaN14g
 
 ## TODO:
 
