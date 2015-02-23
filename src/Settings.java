@@ -15,7 +15,7 @@ public class Settings {
 	public boolean BREAK_ON_MOUSE_MOVEMENT = false;
 	public boolean COLOR_SMOOTHING = true;
 	public int MORPH_METHOD = 0;
-	public boolean ALTERNATE_PRESETS = true;
+	public boolean ALTERNATE_PRESETS = false;
 	public boolean OUTLINES_ONLY = false;
 	public boolean SPLIT_SCREEN = false;
 
@@ -46,7 +46,7 @@ public class Settings {
 				"CALCULATION" };
 		String[][] assertKeys = new String[][] {
 				new String[] { "fpsCap", "resToCellRatio",
-						"BREAK_ON_MOUSE_MOVEMENT", "SPLIT_SCREEN" },
+						"BREAK_ON_MOUSE_MOVEMENT", "SPLIT_SCREEN", "ALTERNATE_PRESETS" },
 				new String[] { "rgb1", "rgb2", "rgb3", "CRUDE_OUTLINES_ONLY",
 						"colourShiftInterval", "COLOR_MORPH", "MORPH_METHOD",
 						"COLOR_SMOOTHING", "borderThickness" },
@@ -65,7 +65,7 @@ public class Settings {
 				e.printStackTrace();
 				choosePreset(0);
 				try {
-					jini.saveFile();
+					iniSave();
 				} catch (IOException e1) {
 					System.out.println("Failed to iniSave()");
 					e1.printStackTrace();
@@ -76,7 +76,7 @@ public class Settings {
 			choosePreset(0);
 
 			try {
-				jini.saveFile();
+				iniSave();
 			} catch (IOException e1) {
 				System.out.println("Failed to iniSave()");
 				e1.printStackTrace();
@@ -88,13 +88,16 @@ public class Settings {
 
 		// Load GLOBAL values
 		fpsCap = jini.getInt("GLOBAL", "fpsCap");
+		if (fpsCap == 0) fpsCap = 30;
 		BREAK_ON_MOUSE_MOVEMENT = jini.getBoolean("GLOBAL",
 				"BREAK_ON_MOUSE_MOVEMENT");
 		SPLIT_SCREEN = jini.getBoolean("GLOBAL", "SPLIT_SCREEN");
 		screenRatio = jini.getInt("GLOBAL", "resToCellRatio");
+		if (screenRatio == 0) screenRatio = 4;
 		if (SPLIT_SCREEN) {
 			screenRatio *= 2;
 		}
+		ALTERNATE_PRESETS = jini.getBoolean("GLOBAL", "ALTERNATE_PRESETS");
 
 		// Load COLOR values
 		colorArray = new Color[] { new Color(jini.getInt("COLOR", "rgb1")),
@@ -128,6 +131,7 @@ public class Settings {
 		jini.setKVP("GLOBAL", "BREAK_ON_MOUSE_MOVEMENT",
 				BREAK_ON_MOUSE_MOVEMENT + "");
 		jini.setKVP("GLOBAL", "SPLIT_SCREEN", SPLIT_SCREEN + "");
+		jini.setKVP("GLOBAL", "ALTERNATE_PRESETS", ALTERNATE_PRESETS + "");
 
 		// Save COLOR section
 		jini.setKVP("COLOR", "rgb1", colorArray[0].getRGB() + "");

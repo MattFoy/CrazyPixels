@@ -137,6 +137,7 @@ public class Launcher {
 				} catch (IOException e) {
 					splitScreen = false;
 					e.printStackTrace();
+					System.out.println("Don't worry, defaulting to false.");
 				} // this splits each screen into quarters for mini-displays
 					// instead of using the whole screen
 				if (splitScreen) {
