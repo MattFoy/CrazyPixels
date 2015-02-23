@@ -20,6 +20,8 @@ Sample 3: https://www.youtube.com/watch?v=z-IbhmgCHsw
 
 ## TODO:
 
+0) Make the colour interval swap a sinusoidal function?
+
 1) Fix issue with screen resolution / multi monitor setups.
 
 2) Build into a .jar, wrap in a .exe, rename to .scr and it's a screensaver.

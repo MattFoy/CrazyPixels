@@ -15,7 +15,7 @@ public class Settings {
 	public boolean BREAK_ON_MOUSE_MOVEMENT = false;
 	public boolean COLOR_SMOOTHING = true;
 	public int MORPH_METHOD = 0;
-	public boolean ALTERNATE_PRESETS = false;
+	public boolean ALTERNATE_PRESETS = true;
 	public boolean OUTLINES_ONLY = false;
 	public boolean SPLIT_SCREEN = false;
 
@@ -173,7 +173,7 @@ public class Settings {
 			randScrand = true;
 			fuzzEdges = true;
 			chaosFactor = 0;
-			COLOR_MORPH = false;
+			//COLOR_MORPH = false;
 			break;
 		case 1:
 			// CRAZY TRIANGLES
@@ -186,7 +186,7 @@ public class Settings {
 			randScrand = true;
 			fuzzEdges = false;
 			chaosFactor = 0;
-			COLOR_MORPH = true;
+			//COLOR_MORPH = true;
 			break;
 		case 2:
 			// EVOLUTION COMPLETE
@@ -199,7 +199,7 @@ public class Settings {
 			randScrand = false;
 			fuzzEdges = true;
 			chaosFactor = 1;
-			COLOR_MORPH = false;
+			//COLOR_MORPH = false;
 			break;
 		case 3:
 			// Making ripples Black/Blue
@@ -212,7 +212,7 @@ public class Settings {
 			randScrand = false;
 			fuzzEdges = true;
 			chaosFactor = 1;
-			COLOR_MORPH = false;
+			//COLOR_MORPH = false;
 			break;
 		case 4:
 			// Making ripples Blue/Blue
@@ -225,7 +225,7 @@ public class Settings {
 			randScrand = false;
 			fuzzEdges = true;
 			chaosFactor = 1;
-			COLOR_MORPH = false;
+			//COLOR_MORPH = false;
 			break;
 		case 5:
 			// EVOLUTION COMPLETE
@@ -239,7 +239,7 @@ public class Settings {
 			randScrand = false;
 			fuzzEdges = true;
 			chaosFactor = 1;
-			COLOR_MORPH = false;
+			//COLOR_MORPH = false;
 			break;
 		default:
 			colorArray = new Color[] { Color.BLUE, Color.BLACK, Color.WHITE };
@@ -251,7 +251,7 @@ public class Settings {
 			randScrand = false;
 			fuzzEdges = true;
 			chaosFactor = 1;
-			COLOR_MORPH = false;
+			//COLOR_MORPH = false;
 			break;
 		}
 	}
