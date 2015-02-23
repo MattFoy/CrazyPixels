@@ -13,6 +13,8 @@ But I found that if the settings were tweaked you could produce even more intere
 
 10min (with music): https://www.youtube.com/watch?v=TS1BvGaN14g
 
+15s HTML5 excerpt: http://gfycat.com/ForcefulHardtofindAmurratsnake
+
 ## TODO:
 
 0) Make the colour interval swap a sinusoidal function?
