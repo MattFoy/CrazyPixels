@@ -467,7 +467,10 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 		// Colour shifting is still a WIP, it's hard to 
 		// get a good gradient going
-		if (settings.COLOR_MORPH && this.iteration % settings.colourShiftInterval == 0) {
+		int sineFactor = Math.max(1, Math.abs((int)(10 * Math.sin(iteration / (Math.PI * 10 * settings.colourShiftInterval))+1)));
+		//System.out.println(sineFactor);
+		if (settings.COLOR_MORPH && this.iteration % sineFactor == 0) {
+			System.out.println(iteration + " colour shifting!");
 			for (int i = 0; i < settings.colorArray.length; i++) {
 				if (settings.MORPH_METHOD == 0) {
 					int newR = Math
