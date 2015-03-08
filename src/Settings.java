@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.IOException;
 
@@ -10,6 +11,7 @@ public class Settings {
 	public static RandomCounter rand = new RandomCounter();
 
 	public JINI jini;
+	private Frame f;
 
 	public int fpsCap = 30;
 	public boolean BREAK_ON_MOUSE_MOVEMENT = false;
@@ -18,11 +20,11 @@ public class Settings {
 	public boolean ALTERNATE_PRESETS = false;
 	public boolean OUTLINES_ONLY = false;
 	public boolean SPLIT_SCREEN = false;
-
+	
 	private Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-	private int screenRatio = 2;
 	private int screenWidth = screen.width;
 	private int screenHeight = screen.height;
+	private int screenRatio = 2;
 	public int WIDTH = (int) (screenWidth / screenRatio);
 	public int HEIGHT = (int) (screenHeight / screenRatio);
 	public int borderThickness = 1;
@@ -39,8 +41,11 @@ public class Settings {
 	public boolean fuzzEdges;
 	public int chaosFactor;
 
-	public Settings(JINI jini) {
+	public Settings(JINI jini, Frame f) {
 		this.jini = jini;
+		this.f = f;
+		
+		setScale();
 
 		String[] assertSections = new String[] { "GLOBAL", "COLOR",
 				"CALCULATION" };
@@ -157,8 +162,32 @@ public class Settings {
 		jini.saveFile();
 	}
 
+		
+	private boolean ratioFits(int ratio) {
+		if (ratio == 0) return false;
+		return (screenWidth % ratio != 0 && screenHeight % ratio != 0);
+	}
+	
 	public void setScale() {
 		// screenRatio = scale;
+		screenWidth = f.getWidth();
+		screenHeight = f.getHeight();
+		
+		if (!ratioFits(screenRatio)) {
+			if (ratioFits(screenRatio + 1)) {
+				screenRatio++;
+			} else if (ratioFits(screenRatio - 1)) {
+				screenRatio--;
+			} else if (ratioFits(screenRatio + 2)) {
+				screenRatio += 2;
+			} else if (ratioFits(screenRatio - 2)) {
+				screenRatio -= 2;
+			}
+			if (screenRatio < 1) {
+				screenRatio = 1;
+			}
+		}
+		
 		WIDTH = (int) (screenWidth / screenRatio);
 		HEIGHT = (int) (screenHeight / screenRatio);
 	}

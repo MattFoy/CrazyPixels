@@ -8,6 +8,8 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 	private static final long serialVersionUID = 8647759938885297720L;
 
 	public Settings settings;
+	
+	private Frame parentF;
 
 	private int[][] grid;
 	private int[][] shadowGrid;
@@ -29,9 +31,10 @@ public class CrazyPixelsCanvas extends DoubleBufferCanvas {
 
 	private int[] surroundings;
 
-	public CrazyPixelsCanvas(JINI jini) {
+	public CrazyPixelsCanvas(JINI jini, Frame f) {
 		super();
-		settings = new Settings(jini);
+		parentF = f;
+		settings = new Settings(jini, parentF);
 		//settings.choosePreset(3);
 		for (Color c : settings.colorArray) {
 			System.out.println(c.getRGB());

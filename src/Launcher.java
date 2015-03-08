@@ -38,7 +38,7 @@ public class Launcher {
 	}
 
 	public static void configure() {
-		Settings settings = new Settings(jini);
+		Settings settings = new Settings(jini, null);
 		Frame configFrame = new Frame("Configuration");
 		configFrame.setSize(500, 500);
 		Panel panel = new Panel();
@@ -155,16 +155,16 @@ public class Launcher {
 
 					int preset = 0;
 					for (Rectangle rect : bounds) {
-						new Launcher().buildUI(rect, preset++, 4);
+						new Launcher().buildUI(rect, preset++);
 					}
 				} else {
-					new Launcher().buildUI(gc[i].getBounds(), 0, 2);
+					new Launcher().buildUI(gc[i].getBounds(), 0);
 				}
 			}
 		}
 	}
 
-	public void buildUI(Rectangle r, int preset, int canvasRatio) {
+	public void buildUI(Rectangle r, int preset) {
 		mainFrame = new Frame("");
 		mainFrame.setBounds(r);
 		mainFrame.setAlwaysOnTop(true);
@@ -211,7 +211,7 @@ public class Launcher {
 		// Set the blank cursor to the JFrame.
 		mainFrame.setCursor(blankCursor);
 
-		CrazyPixelsCanvas canv = new CrazyPixelsCanvas(jini);
+		CrazyPixelsCanvas canv = new CrazyPixelsCanvas(jini, mainFrame);
 		if (canv.settings.BREAK_ON_MOUSE_MOVEMENT) {
 			//TODO make the program stop if the mouse moves.
 		}
