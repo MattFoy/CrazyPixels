@@ -17,11 +17,7 @@ But I found that if the settings were tweaked you could produce even more intere
 
 ## TODO:
 
-0) Make the colour interval swap a sinusoidal function?
-
-1) Fix issue with screen resolution / multi monitor setups.
-
-2) Build into a .jar, wrap in a .exe, rename to .scr and it's a screensaver.
+1) Build into a .jar, wrap in a .exe, rename to .scr and it's a screensaver.
 (Would be nice to account for /p /s /c command line args)
 
-3) Add the ability to click and drag to paint swathes of colours on the grid.
+2) Add the ability to click and drag to paint swathes of colours on the grid.
